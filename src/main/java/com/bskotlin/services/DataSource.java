@@ -2,17 +2,19 @@ package com.bskotlin.services;
 
 import org.springframework.data.annotation.Id;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class DataSource {
 
-    @Id private String id;
+    @Id
+    @JsonProperty
+    private String id;
+    
+    @JsonProperty(required=true, value="url")
     private String url;
 
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String value) {
-        this.url = value;
+    public DataSource(@JsonProperty("url") String url) {
+        this.setUrl(url);
     }
 
     public String getId() {
@@ -23,4 +25,11 @@ public class DataSource {
         this.id = id;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
 }

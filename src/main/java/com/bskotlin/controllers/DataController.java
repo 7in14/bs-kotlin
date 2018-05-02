@@ -1,12 +1,19 @@
 package com.bskotlin.controllers;
 
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bskotlin.repository.interfaces.DataRepository;
 import com.bskotlin.services.Data;
 import com.bskotlin.services.DataSource;
 import com.bskotlin.services.DatasourceService;
@@ -15,25 +22,22 @@ import com.bskotlin.services.DatasourceService;
 @RestController
 public class DataController {
 
-    private DatasourceService service;
+    @Autowired
+    private DataRepository service;
 
-    public DataController() {
-        this.service = new DatasourceService();//TODO: decouple this, some dependency injection in spring?
-    }
+//    public DataController() {
+//        //this.service = new DatasourceService();//TODO: decouple this, some dependency injection in spring?
+//    }
 
     @RequestMapping("/allData")
     public List<Data> getAll(){
-        //var result = new ArrayList<Data>();
-        //result.add(new Data("test title 1", "test details 1"));
-        //result.add(new Data("test title 2", "test details 2"));
-        //return result;
-        //return this.service.getAll().stream().map(d -> getDataFromUrl());
-        return this.service.getAllData();
+        return this.service.findAll().stream().map(x-> new Data("",x.getUrl())).collect(Collectors.toList());
     }
 
-    @RequestMapping(value = "/data", method = RequestMethod.POST)
-    public void insert(DataSource ds) {
-        this.service.insert(ds);
+    @RequestMapping(value = "/data", method = RequestMethod.POST, consumes = "application/json")
+    public ResponseEntity insert(@RequestBody DataSource ds) {
+        this.service.save(ds);
+        return new ResponseEntity<>("Saved", HttpStatus.OK);
     }
 
     @RequestMapping("/test")
