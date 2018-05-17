@@ -1,17 +1,22 @@
 package com.bskotlin.services;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.bskotlin.repository.interfaces.DataRepository;
 
-public class DatasourceService {
+@Component("dataService")
+public class DataService {
 
     @Autowired
     private DataRepository repository;
+    
+    public DataService(DataRepository dataRepository) {
+    	this.repository = dataRepository;
+    }
 
     public void insert(DataSource dataSource) {
         repository.insert(dataSource);
@@ -39,9 +44,9 @@ public class DatasourceService {
 
     private Data getData(DataSource ds) {
 
-        var body = ds.getUrl();
-        var title = "real body will be data returned from url, todo..";
-        var result = new Data(title, body);
+        String body = ds.getUrl();
+        String title = "real body will be data returned from url, todo..";
+        Data result = new Data(title, body);
         
         return result;
     }
